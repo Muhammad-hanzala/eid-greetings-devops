@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		    <title>Eid Mubarak Greetings</title>
+		        <style>
+        body { text-align: center; font-family: Arial, sans-serif; margin-top: 50px; }
+	        h1 { color: #27ae60; }
+		    </style>
+	</head>
+	<body>
+		    <h1 id="greeting">Loading...</h1>
+		        <script>
+				        fetch('greeting.txt')
+					        .then(response => response.text())
+					        .then(data => document.getElementById('greeting').innerText = data);
+					    </script>
+	</body>
+</html>
+

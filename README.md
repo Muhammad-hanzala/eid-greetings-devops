@@ -2,7 +2,7 @@
 
 ## **Deployed Eid Greetings DevOps Mini Project Using AWS Free Tier & GitHub Actions (Step by Step Guide) 🚀**
 
-
+---
 
 ### 📌 **Project Overview**  
 This project automates the deployment of an Eid greeting webpage using **AWS Free Tier (EC2)**, **GitHub Actions**, and **Apache**. When the `greeting.txt` file is updated in the GitHub repository, **GitHub Actions** automatically deploys the new greeting to the EC2 instance, making it a fully automated and hands-free process.

@@ -1,6 +1,4 @@
-Here’s the article based on your request:
 
----
 
 ## **Deployed Eid Greetings DevOps Mini Project Using AWS Free Tier & GitHub Actions (Step by Step Guide) 🚀**
 

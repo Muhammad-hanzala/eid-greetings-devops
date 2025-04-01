@@ -1,131 +1,164 @@
-# Eid Greetings DevOps Mini Project Using AWS Free Tier & GitHub Actions 🚀
+Deployed Eid Greetings DevOps Mini Project Using AWS Free Tier & GitHub Actions                              
+(Step by Step guide) 🚀
 
-## 📌 **Project Overview**
 
-This project automates the deployment of an Eid greeting webpage using **AWS Free Tier (EC2), GitHub Actions, and Apache**. When the `greeting.txt` file is updated in the GitHub repository, **GitHub Actions automatically deploys the new greeting** to the EC2 instance.
+📌 Project Overview
+This project automates the deployment of an Eid greeting webpage using AWS Free Tier (EC2), GitHub Actions, and Apache. When the greeting.txt file is updated in the GitHub repository, GitHub Actions automatically deploys the new greeting to the EC2 instance.
 
-## 🔧 **Tech Stack**
+🔧 Tech Stack
+AWS EC2 (Free Tier) - Hosting the website
 
-- **AWS EC2 (Free Tier)** - Hosting the website
-- **Apache Web Server** - Serving the webpage
-- **GitHub Actions** - Automating the deployment process
-- **Bash & Linux** - Automating file updates
+Apache Web Server - Serving the webpage
 
----
+GitHub Actions - Automating the deployment process
 
-## 🛠️ **Step-by-Step Implementation**
+Bash & Linux - Automating file updates
 
-### **1️⃣ Launch an EC2 Instance (Free Tier)**
 
-1. Go to [AWS Console](https://aws.amazon.com/) → EC2 → Launch Instance.
-2. Choose **Amazon Linux 2** (or Ubuntu if preferred).
-3. Select **t2.micro** (Free Tier eligible).
-4. Configure Security Group:
-   - Allow **HTTP (80)** from `0.0.0.0/0`
-   - Allow **SSH (22)** from your IP
-5. Launch and **download the key pair** (`.pem` file).
-6. Connect to the instance:
-   ```bash
-   ssh -i your-key.pem ec2-user@your-public-ip
-   ```
+🛠️ Step-by-Step Implementation
+1️⃣ Launch an EC2 Instance (Free Tier)
+Go to AWS Console → EC2 → Launch Instance.
 
-### **2️⃣ Install & Configure Apache**
+Choose Amazon Linux 2 (or Ubuntu if preferred).
 
-```bash
+Select t2.micro (Free Tier eligible).
+
+Configure Security Group:
+
+ Allow HTTP & SSH
+
+Launch and download the key pair (.pem file).
+
+Connect to the instance:
+
+ssh -i your-key.pem ec2-user@your-public-ip
+
+2️⃣ Install & Configure Apache
 sudo yum update -y
 sudo yum install httpd -y
 sudo systemctl start httpd
 sudo systemctl enable httpd
-```
 
 Set permissions:
 
-```bash
 sudo chown -R ec2-user:ec2-user /var/www/html
-```
 
----
 
-### **3️⃣ Set Up GitHub Repository**
+3️⃣ Set Up GitHub Repository
+Create a new GitHub repository.
 
-1. Create a **new GitHub repository**.
-2. Clone it on your local machine:
-   ```bash
-   git clone https://github.com/your-username/eid-greetings-devops.git
-   cd eid-greetings-devops
-   ```
-3. Create a **greeting.txt** file:
-   ```bash
-   echo -e "💖 عيد مبارك! 💖\nنسأل الله أن يبارك لك هذا العيد ويمنحك السعادة والسلام.\nنتمنى لك نشرات خالية من الأخطاء وعمليات نشر ناجحة دائمًا! 🚀\n\n\n💖 Eid Mubarak! 💖\nMay Allah bless you with joy, peace, and prosperity this Eid.\nWishing you error-free logs and successful deployments always! 🚀" > greeting.txt
-   ```
-4. Commit and push:
-   ```bash
-   git add greeting.txt
-   git commit -m "Initial Eid greeting with Arabic and English"
-   git push origin main
-   ```
+Clone it on your local machine:
 
----
+git clone https://github.com/your-username/eid-greetings-devops.git
+cd eid-greetings-devops
 
-### **4️⃣ Set Up GitHub Actions for Automated Deployment**
+4️⃣ Create the Web Files
+Inside your cloned repo, create:
 
-1. Inside your repo, create `.github/workflows/deploy.yml`.
-2. Add the following content:
-   ```yaml
-   name: Deploy Eid Greeting
+📜 index.html (Main Page)
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eid Mubarak Greetings</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; margin-top: 50px; }
+        h1 { color: #27ae60; }
+    </style>
+</head>
+<body>
+    <h1 id="greeting">Loading...</h1>
+    <script>
+        fetch('greeting.txt')
+        .then(response => response.text())
+        .then(data => document.getElementById('greeting').innerText = data);
+    </script>
+</body>
+</html>
 
-   on:
-     push:
-       branches:
-         - main
 
-   jobs:
-     deploy:
-       runs-on: ubuntu-latest
+📜 greeting.txt (Message File)
+Eid Mubarak! May your deployments always be successful! 🎉
+Now commit and push the files to GitHub:
 
-       steps:
-       - name: Checkout code
-         uses: actions/checkout@v3
+git add .
+git commit -m "Initial Eid greeting page"
+git push origin main
 
-       - name: Deploy to EC2
-         run: |
-           ssh -o StrictHostKeyChecking=no ec2-user@your-public-ip << 'EOF'
-             cd /var/www/html
-             echo "$(cat greeting.txt)" > index.html
-           EOF
-         env:
-           SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
-   ```
-3. **Add SSH Key to GitHub Secrets:**
-   - Go to your repo → Settings → Secrets → Actions → **New repository secret**.
-   - Name: `EC2_SSH_KEY`
-   - Value: **Your private key content (****`.pem`**** file)**
+5️⃣ Set Up GitHub Actions for Automated Deployment
+Inside your repo, create .github/workflows/deploy.yml.
 
----
+📜 Create a GitHub Actions Workflow
 
-### **5️⃣ Test the CI/CD Pipeline**
+name: Deploy Eid Greeting
 
-1. Edit `greeting.txt` and update the message:
-   ```bash
-   echo -e "💖 عيد مبارك! 💖\nنسأل الله أن يبارك لك هذا العيد ويمنحك السعادة والسلام.\nنتمنى لك نشرات خالية من الأخطاء وعمليات نشر ناجحة دائمًا! 🚀\n\n\n💖 Eid Mubarak! 💖\nMay Allah bless you with joy, peace, and prosperity this Eid.\nWishing you error-free logs and successful deployments always! 🚀" > greeting.txt
-   ```
-2. Commit and push:
-   ```bash
-   git add greeting.txt
-   git commit -m "Updated Eid greeting"
-   git push origin main
-   ```
-3. **GitHub Actions will run automatically**, updating your EC2-hosted webpage.
-4. Open **[http://your-public-ip/](http://your-public-ip/)** in a browser to see the updated greeting.
+on:
+  push:
+    branches:
+      - main
 
----
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-## 🚀 **Project Benefits**
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-✅ **Automated Deployment** using GitHub Actions
-✅ **AWS Free Tier Usage** - No cost involved
-✅ **Simple CI/CD pipeline for real-world experience**
-✅ **Scalable & Customizable** for future automation
+    - name: Deploy to EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no ec2-user@your-public-ip << 'EOF'
+          cd /var/www/html
+          echo "$(cat greeting.txt)" > index.html
+        EOF
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
+✅ This script automatically updates your EC2 instance whenever you push a new greeting.
 
-🌙 **Happy Eid & Happy Coding!** 💖
 
+6️⃣ Set Up GitHub Secrets for Secure Access
+Add SSH Key to GitHub Secrets:
+
+Go to your repo → Settings → Secrets → Actions → New repository secret.
+
+SSH_PRIVATE_KEY → Paste your EC2 .pem key content
+
+EC2_PUBLIC_IP → Your EC2 instance's public IP
+
+✅ Now, GitHub Actions can securely deploy your updates!
+
+
+7️⃣ Test the CI/CD Pipeline
+Edit greeting.txt and update the message:
+
+echo -e " عيد مبارك! \nنسأل الله أن يبارك لك هذا العيد ويمنحك السعادة والسلام.\nنتمنى لك نشرات خالية من الأخطاء وعمليات نشر ناجحة دائمًا! 🚀\n\n\n Eid Mubarak! \nMay Allah bless you with joy, peace, and prosperity this Eid.\nWishing you error-free logs and successful deployments always! 🚀" > greeting.txt
+Commit and push:
+
+git add .
+git commit -m "Updated Eid message"
+git push origin main
+GitHub Actions will run automatically, updating your EC2-hosted webpage.
+
+Open http://your-public-ip/ in a browser to see the updated greeting.
+
+
+🚀 Project Benefits :
+✅ Automated Deployment using GitHub Actions 
+
+✅ AWS Free Tier Usage - No cost involved 
+
+✅ Simple CI/CD pipeline for real-world experience 
+
+✅ Scalable & Customizable for future automation
+
+
+
+
+
+🚀 Final Results :
+
+
+Minimize image
+Edit image
+Delete image
+
+🌙 Happy Eid & Happy Coding! 💖
